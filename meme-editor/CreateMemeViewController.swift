@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate,
+class CreateMemeViewController: UIViewController, UIImagePickerControllerDelegate,
 UINavigationControllerDelegate, UITextFieldDelegate {
 
   @IBOutlet weak var imageView: UIImageView!
@@ -17,13 +17,6 @@ UINavigationControllerDelegate, UITextFieldDelegate {
   @IBOutlet weak var bottomText: UITextField!
   @IBOutlet weak var toolbar: UIToolbar!
   @IBOutlet weak var navBar: UINavigationBar!
-
-  struct Meme {
-    var topTextField: String?
-    var bottomTextField: String?
-    var originalImage: UIImage?
-    let memedImage: UIImage!
-  }
 
   static let textAttributes:[String:Any] = [
     NSStrokeColorAttributeName: UIColor.black,
@@ -34,6 +27,7 @@ UINavigationControllerDelegate, UITextFieldDelegate {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+
     cameraButton.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
     subscribeToKeyboardNotifications()
   }
@@ -46,11 +40,11 @@ UINavigationControllerDelegate, UITextFieldDelegate {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.dismissKeyboard))
+    let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(CreateMemeViewController.dismissKeyboard))
     view.addGestureRecognizer(tap)
 
     navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(share))
-    navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(clear))
+    navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
 
     imageView.contentMode = .scaleAspectFit
     for textField in [topText, bottomText] as! [UITextField] {
@@ -60,7 +54,7 @@ UINavigationControllerDelegate, UITextFieldDelegate {
 
 // MARK: Text attributes & delgates
   func setTextAttributes(_ textField: UITextField) {
-    textField.defaultTextAttributes = ViewController.textAttributes
+    textField.defaultTextAttributes = CreateMemeViewController.textAttributes
     textField.autocapitalizationType = .allCharacters
     textField.autocorrectionType = .no
     textField.textAlignment = .center
@@ -128,12 +122,12 @@ UINavigationControllerDelegate, UITextFieldDelegate {
         NSLog("There was an error saving/sharing meme: \(String(describing: error))" )
       }
     }
-
     present(activityView, animated: true, completion: nil)
   }
 
   func save(image: UIImage) {
     let meme = Meme(topTextField: topText.text, bottomTextField: bottomText.text, originalImage: imageView.image, memedImage: image)
+    (UIApplication.shared.delegate as! AppDelegate).memesCollection.append(meme)
   }
 
   func generateMemedImage() -> UIImage {
@@ -148,6 +142,11 @@ UINavigationControllerDelegate, UITextFieldDelegate {
     toolbar.isHidden = false
     navBar.isHidden = false
     return memedImage
+  }
+  
+  func cancel() {
+    clear()
+    dismiss(animated: true, completion: nil)
   }
 
   func clear() {
@@ -176,7 +175,7 @@ UINavigationControllerDelegate, UITextFieldDelegate {
 
   func keyboardWillHide(_ notification:Notification) {
     if bottomText.isFirstResponder {
-      view.frame.origin.y += getKeyboardHeight(notification)
+      view.frame.origin.y = 0
     }
   }
 
