@@ -16,6 +16,7 @@ internal class DetailViewController : UIViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     self.tabBarController?.tabBar.isHidden = true
+    detailImageView.contentMode = .scaleAspectFit
     detailImageView.image = meme.memedImage
   }
 

@@ -118,6 +118,7 @@ UINavigationControllerDelegate, UITextFieldDelegate {
     activityView.completionWithItemsHandler = { activity, success, items, error in
       if success {
         self.save(image: memedImage)
+        self.dismiss(animated: true, completion: nil)
       } else {
         NSLog("There was an error saving/sharing meme: \(String(describing: error))" )
       }
