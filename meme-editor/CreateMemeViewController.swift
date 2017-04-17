@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  CreateMemeViewController.swift
 //  meme-editor
 //
 //  Created by liz on 9/4/17.

@@ -16,12 +16,12 @@ internal class DetailViewController : UIViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     self.tabBarController?.tabBar.isHidden = true
-    detailImageView.contentMode = .scaleAspectFit
     detailImageView.image = meme.memedImage
   }
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
+    detailImageView.contentMode = .scaleAspectFit
     self.tabBarController?.tabBar.isHidden = false
   }
 }
